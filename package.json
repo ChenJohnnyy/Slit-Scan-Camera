@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "A web application for live slit-scan photography",
   "scripts": {
-    "build": "./build.sh"
+    "build": "mkdir -p dist && cp index.html styles.css app.js _redirects _headers dist/"
   },
-  "private": true
+  "private": true,
+  "engines": {
+    "node": ">=16.0.0"
+  }
 } 
