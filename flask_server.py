@@ -25,13 +25,6 @@ if __name__ == '__main__':
     context.load_cert_chain('cert.pem', 'key.pem')
     
     print("\nServer starting...")
-    print("Access the application at:")
-    print("1. On your computer: https://localhost:8000")
-    print("2. On your phone: https://10.105.141.221:8000")
-    print("\nIMPORTANT: When accessing from your phone:")
-    print("1. You'll see a security warning - this is normal")
-    print("2. Click 'Advanced'")
-    print("3. Click 'Proceed to 10.105.141.221 (unsafe)'")
-    print("\nMake sure your phone is on the same WiFi network as your computer.")
+    print("Access the application at: https://localhost:8000")
     
-    app.run(host='0.0.0.0', port=8000, ssl_context=context, debug=True) 
+    app.run(host='127.0.0.1', port=8000, ssl_context=context, debug=True) 

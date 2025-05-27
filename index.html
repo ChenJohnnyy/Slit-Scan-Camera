@@ -8,48 +8,18 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>Slit-Scan Camera</h1>
+        <div class="controls">
+            <select id="cameraSelect" class="control-button">
+                <option value="">Loading cameras...</option>
+            </select>
+            <button id="startButton" class="control-button">Start Camera</button>
+            <button id="captureButton" class="control-button" disabled>Capture Slice</button>
+            <button id="downloadButton" class="control-button" disabled>Download Image</button>
+            <button id="clearButton" class="control-button" disabled>Clear Image</button>
         </div>
-        
-        <div class="main-content">
-            <div class="camera-container">
-                <video id="camera-feed" autoplay playsinline></video>
-                <div class="camera-overlay">
-                    <div id="slice-indicator"></div>
-                </div>
-            </div>
-            
-            <div class="controls">
-                <div class="control-group">
-                    <label for="slice-position">Slice Position:</label>
-                    <select id="slice-position">
-                        <option value="center">Center</option>
-                        <option value="left">Left Third</option>
-                        <option value="right">Right Third</option>
-                    </select>
-                </div>
-                
-                <div class="control-group">
-                    <label for="slice-width">Slice Width (px):</label>
-                    <input type="number" id="slice-width" min="1" max="10" value="1">
-                </div>
-                
-                <div class="control-group">
-                    <label for="capture-rate">Capture Rate (ms):</label>
-                    <input type="number" id="capture-rate" min="16" max="1000" value="33">
-                </div>
-                
-                <div class="button-group">
-                    <button id="start-btn" class="btn primary">Start</button>
-                    <button id="stop-btn" class="btn secondary" disabled>Stop</button>
-                    <button id="download-btn" class="btn secondary" disabled>Download</button>
-                </div>
-            </div>
-            
-            <div class="preview-container">
-                <canvas id="slit-scan-preview"></canvas>
-            </div>
+        <div class="preview-container">
+            <video id="preview" autoplay playsinline></video>
+            <div id="slicePreview" class="slice-preview"></div>
         </div>
     </div>
     <script src="app.js"></script>
