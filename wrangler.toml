@@ -1,0 +1,9 @@
+name = "slit-scan-camera"
+compatibility_date = "2024-05-27"
+
+[site]
+bucket = "./dist"
+entry-point = "."
+
+[build]
+command = "npm run build" 
