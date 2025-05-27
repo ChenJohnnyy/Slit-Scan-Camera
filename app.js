@@ -2,6 +2,9 @@ let stream = null;
 let capturedSlices = [];
 let isCapturing = false;
 let captureInterval = null;
+let frameCount = 0;
+let lastCaptureTime = 0;
+let targetHeight = 300; // Match the CSS height
 
 const preview = document.getElementById('preview');
 const slicePreview = document.getElementById('slicePreview');
@@ -104,9 +107,37 @@ function stopCamera() {
     stopCapturing();
 }
 
+// Start capturing slices
+function startCapturing() {
+    if (!stream) return;
+    
+    isCapturing = true;
+    captureButton.textContent = 'Stop Capturing';
+    downloadButton.disabled = true;
+    frameCount = 0;
+    
+    // Reset preview
+    slicePreview.innerHTML = '';
+    capturedSlices = [];
+    
+    // Start capturing at 100ms intervals
+    captureInterval = setInterval(captureSlice, 100);
+}
+
+// Stop capturing slices
+function stopCapturing() {
+    isCapturing = false;
+    if (captureInterval) {
+        clearInterval(captureInterval);
+        captureInterval = null;
+    }
+    captureButton.textContent = 'Start Capturing';
+    downloadButton.disabled = false;
+}
+
 // Capture a slice
 function captureSlice() {
-    if (!stream) return;
+    if (!stream || !isCapturing) return;
 
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -130,8 +161,12 @@ function captureSlice() {
     // Scroll to the end
     slicePreview.scrollLeft = slicePreview.scrollWidth;
     
-    // Enable download button if we have slices
-    downloadButton.disabled = false;
+    // Debug logging
+    frameCount++;
+    const now = performance.now();
+    const timeSinceLastCapture = now - lastCaptureTime;
+    lastCaptureTime = now;
+    console.log(`Frame ${frameCount}: Time since last capture: ${timeSinceLastCapture.toFixed(2)}ms`);
 }
 
 // Download the final image
@@ -175,7 +210,14 @@ startButton.addEventListener('click', () => {
     }
 });
 
-captureButton.addEventListener('click', captureSlice);
+captureButton.addEventListener('click', () => {
+    if (isCapturing) {
+        stopCapturing();
+    } else {
+        startCapturing();
+    }
+});
+
 downloadButton.addEventListener('click', downloadImage);
 clearButton.addEventListener('click', clearSlices);
 
