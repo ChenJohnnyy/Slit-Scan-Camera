@@ -4,7 +4,6 @@ let isCapturing = false;
 let captureInterval = null;
 let frameCount = 0;
 let lastCaptureTime = 0;
-let targetHeight = 300; // Match the CSS height
 let sliceWidth = 2; // Width of each slice in pixels
 
 const preview = document.getElementById('preview');
@@ -120,7 +119,7 @@ function startCapturing() {
     // Create a canvas for the final image
     const canvas = document.createElement('canvas');
     canvas.width = 0;
-    canvas.height = targetHeight;
+    canvas.height = preview.videoHeight; // Use full video height
     const ctx = canvas.getContext('2d');
     
     // Reset preview
@@ -169,7 +168,7 @@ function captureSlice(canvas, ctx) {
     const tempCanvas2 = document.createElement('canvas');
     const tempCtx2 = tempCanvas2.getContext('2d');
     tempCanvas2.width = newWidth;
-    tempCanvas2.height = targetHeight;
+    tempCanvas2.height = canvas.height;
     
     // Copy existing content
     if (canvas.width > 0) {
@@ -183,14 +182,14 @@ function captureSlice(canvas, ctx) {
     canvas.width = newWidth;
     ctx.drawImage(tempCanvas2, 0, 0);
     
-    // Update preview
+    // Create preview image
     const img = document.createElement('img');
     img.src = canvas.toDataURL('image/png');
     img.style.height = '100%';
     
-    // Clear previous preview and add new one
-    slicePreview.innerHTML = '';
+    // Add to preview
     slicePreview.appendChild(img);
+    capturedSlices.push(img);
     
     // Scroll to the end
     slicePreview.scrollLeft = slicePreview.scrollWidth;
@@ -205,12 +204,26 @@ function captureSlice(canvas, ctx) {
 
 // Download the final image
 function downloadImage() {
-    if (slicePreview.children.length === 0) return;
+    if (capturedSlices.length === 0) return;
     
-    const img = slicePreview.children[0];
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Set canvas size to match the total width of all slices
+    canvas.width = capturedSlices.reduce((total, img) => total + img.naturalWidth, 0);
+    canvas.height = capturedSlices[0].naturalHeight;
+    
+    // Draw all slices
+    let x = 0;
+    capturedSlices.forEach(img => {
+        ctx.drawImage(img, x, 0);
+        x += img.naturalWidth;
+    });
+    
+    // Create download link
     const link = document.createElement('a');
     link.download = 'slit-scan-' + new Date().toISOString() + '.png';
-    link.href = img.src;
+    link.href = canvas.toDataURL('image/png');
     link.click();
 }
 
