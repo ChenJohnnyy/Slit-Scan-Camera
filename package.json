@@ -1,0 +1,9 @@
+{
+  "name": "slit-scan-camera",
+  "version": "1.0.0",
+  "description": "A web application for live slit-scan photography",
+  "scripts": {
+    "build": "./build.sh"
+  },
+  "private": true
+} 
