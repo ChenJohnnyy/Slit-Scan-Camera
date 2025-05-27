@@ -126,6 +126,7 @@ body {
     height: auto;
     display: block;
     object-fit: contain;
+    transform: scaleX(-1);
 }
 
 .slice-preview {

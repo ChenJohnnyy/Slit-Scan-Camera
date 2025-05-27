@@ -14,12 +14,37 @@ const clearButton = document.getElementById('clearButton');
 // Get available cameras
 async function getCameras() {
     try {
+        // First request camera permission to get labels on mobile
+        const tempStream = await navigator.mediaDevices.getUserMedia({ video: true });
+        tempStream.getTracks().forEach(track => track.stop());
+        
         const devices = await navigator.mediaDevices.enumerateDevices();
         const videoDevices = devices.filter(device => device.kind === 'videoinput');
         
-        cameraSelect.innerHTML = videoDevices.map((device, index) => 
-            `<option value="${device.deviceId}">${device.label || `Camera ${index + 1}`}</option>`
-        ).join('');
+        // Clear existing options
+        cameraSelect.innerHTML = '';
+        
+        // Add each camera with a descriptive label
+        videoDevices.forEach((device, index) => {
+            const option = document.createElement('option');
+            option.value = device.deviceId;
+            
+            // Create a more descriptive label
+            let label = device.label || `Camera ${index + 1}`;
+            if (label.includes('facing back')) {
+                label = 'Back Camera';
+            } else if (label.includes('facing front')) {
+                label = 'Front Camera';
+            }
+            
+            option.textContent = label;
+            cameraSelect.appendChild(option);
+        });
+        
+        // If no cameras found, show a message
+        if (videoDevices.length === 0) {
+            cameraSelect.innerHTML = '<option value="">No cameras found</option>';
+        }
     } catch (error) {
         console.error('Error getting cameras:', error);
         cameraSelect.innerHTML = '<option value="">No cameras found</option>';
@@ -37,7 +62,8 @@ async function startCamera() {
             video: {
                 deviceId: cameraSelect.value ? { exact: cameraSelect.value } : undefined,
                 width: { ideal: 1920 },
-                height: { ideal: 1080 }
+                height: { ideal: 1080 },
+                facingMode: cameraSelect.value ? undefined : 'user' // Use front camera by default if no device selected
             }
         };
 
