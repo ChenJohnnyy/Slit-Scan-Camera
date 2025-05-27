@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slit-Scan Camera</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Slit-Scan Camera</h1>
+        </div>
+        
+        <div class="main-content">
+            <div class="camera-container">
+                <video id="camera-feed" autoplay playsinline></video>
+                <div class="camera-overlay">
+                    <div id="slice-indicator"></div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <label for="slice-position">Slice Position:</label>
+                    <select id="slice-position">
+                        <option value="center">Center</option>
+                        <option value="left">Left Third</option>
+                        <option value="right">Right Third</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="slice-width">Slice Width (px):</label>
+                    <input type="number" id="slice-width" min="1" max="10" value="1">
+                </div>
+                
+                <div class="control-group">
+                    <label for="capture-rate">Capture Rate (ms):</label>
+                    <input type="number" id="capture-rate" min="16" max="1000" value="33">
+                </div>
+                
+                <div class="button-group">
+                    <button id="start-btn" class="btn primary">Start</button>
+                    <button id="stop-btn" class="btn secondary" disabled>Stop</button>
+                    <button id="download-btn" class="btn secondary" disabled>Download</button>
+                </div>
+            </div>
+            
+            <div class="preview-container">
+                <canvas id="slit-scan-preview"></canvas>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html> 
