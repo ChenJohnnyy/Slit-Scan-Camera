@@ -190,19 +190,40 @@ function updateFullPreview() {
     const frameStep = Math.max(1, Math.floor(CAPTURE_FPS / playbackFPS));
     const totalWidth = Math.ceil(capturedSlices.length / frameStep);
     
-    canvas.width = totalWidth;
-    canvas.height = preview.videoHeight;
+    // Set canvas dimensions while maintaining aspect ratio
+    const aspectRatio = preview.videoHeight / preview.videoWidth;
+    const maxHeight = 400; // Match CSS max-height
+    const maxWidth = 800; // Match CSS max-width
+    
+    // Calculate dimensions that maintain aspect ratio and fit within max dimensions
+    let width = totalWidth;
+    let height = width * aspectRatio;
+    
+    if (height > maxHeight) {
+        height = maxHeight;
+        width = height / aspectRatio;
+    }
+    if (width > maxWidth) {
+        width = maxWidth;
+        height = width * aspectRatio;
+    }
+    
+    canvas.width = width;
+    canvas.height = height;
     
     // Draw each slice
     for (let i = 0; i < capturedSlices.length; i += frameStep) {
         const slice = capturedSlices[i];
-        ctx.putImageData(slice, Math.floor(i / frameStep), 0);
+        const x = Math.floor((i / frameStep) * (width / totalWidth));
+        ctx.putImageData(slice, x, 0, 1, height);
     }
     
     // Update the preview
     const previewCtx = slicePreview.getContext('2d');
-    previewCtx.clearRect(0, 0, slicePreview.width, slicePreview.height);
-    previewCtx.drawImage(canvas, 0, 0, slicePreview.width, slicePreview.height);
+    slicePreview.width = width;
+    slicePreview.height = height;
+    previewCtx.clearRect(0, 0, width, height);
+    previewCtx.drawImage(canvas, 0, 0, width, height);
 }
 
 // Download the final image
@@ -212,19 +233,36 @@ function downloadImage() {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     
-    // Calculate total width based on playback FPS
-    const framesToShow = Math.ceil(capturedSlices.length * (playbackFPS / CAPTURE_FPS));
-    const totalWidth = framesToShow * sliceWidth;
-    canvas.width = totalWidth;
-    canvas.height = capturedSlices[0].naturalHeight;
+    // Calculate total width based on number of slices and frame step
+    const frameStep = Math.max(1, Math.floor(CAPTURE_FPS / playbackFPS));
+    const totalWidth = Math.ceil(capturedSlices.length / frameStep);
     
-    // Draw slices with adjusted spacing
-    let x = 0;
-    const frameStep = Math.floor(CAPTURE_FPS / playbackFPS);
+    // Set canvas dimensions while maintaining aspect ratio
+    const aspectRatio = preview.videoHeight / preview.videoWidth;
+    const maxHeight = 400; // Match CSS max-height
+    const maxWidth = 800; // Match CSS max-width
     
+    // Calculate dimensions that maintain aspect ratio and fit within max dimensions
+    let width = totalWidth;
+    let height = width * aspectRatio;
+    
+    if (height > maxHeight) {
+        height = maxHeight;
+        width = height / aspectRatio;
+    }
+    if (width > maxWidth) {
+        width = maxWidth;
+        height = width * aspectRatio;
+    }
+    
+    canvas.width = width;
+    canvas.height = height;
+    
+    // Draw each slice
     for (let i = 0; i < capturedSlices.length; i += frameStep) {
-        ctx.drawImage(capturedSlices[i], x, 0);
-        x += sliceWidth;
+        const slice = capturedSlices[i];
+        const x = Math.floor((i / frameStep) * (width / totalWidth));
+        ctx.putImageData(slice, x, 0, 1, height);
     }
     
     // Create download link
