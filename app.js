@@ -265,15 +265,40 @@ async function downloadImage() {
             
             // For iOS devices
             if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                // Open in new tab to trigger download
-                window.open(url, '_blank');
+                // Create an image element
+                const img = document.createElement('img');
+                img.src = url;
+                
+                // Wait for image to load
+                await new Promise(resolve => {
+                    img.onload = resolve;
+                });
+                
+                // Create a temporary canvas to ensure proper image data
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = img.width;
+                tempCanvas.height = img.height;
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCtx.drawImage(img, 0, 0);
+                
+                // Convert to data URL and open in new tab
+                const dataUrl = tempCanvas.toDataURL('image/png');
+                window.open(dataUrl, '_blank');
             } else {
                 // For Android devices
-                link.click();
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const dataUrl = e.target.result;
+                    const link = document.createElement('a');
+                    link.href = dataUrl;
+                    link.download = 'slit-scan-' + new Date().toISOString() + '.png';
+                    link.click();
+                };
+                reader.readAsDataURL(blob);
             }
             
             // Clean up
-            setTimeout(() => URL.revokeObjectURL(url), 100);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
         } catch (error) {
             console.error('Error saving image:', error);
             alert('Error saving image. Please try again.');
