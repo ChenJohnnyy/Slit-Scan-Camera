@@ -43,17 +43,17 @@ async function getCameras() {
                 device.label.toLowerCase().includes('back')
             );
             
-            if (frontCamera) {
-                const option = document.createElement('option');
-                option.value = frontCamera.deviceId;
-                option.textContent = 'Front Camera';
-                cameraSelect.appendChild(option);
-            }
-            
             if (backCamera) {
                 const option = document.createElement('option');
                 option.value = backCamera.deviceId;
                 option.textContent = 'Back Camera';
+                cameraSelect.appendChild(option);
+            }
+            
+            if (frontCamera) {
+                const option = document.createElement('option');
+                option.value = frontCamera.deviceId;
+                option.textContent = 'Front Camera';
                 cameraSelect.appendChild(option);
             }
         } else {

@@ -23,10 +23,6 @@
             <div class="control-row">
                 <button id="captureButton" class="control-button" disabled>Start Capturing</button>
             </div>
-            <div class="control-row">
-                <button id="downloadButton" class="control-button" disabled>Download Image</button>
-                <button id="clearButton" class="control-button" disabled>Clear Image</button>
-            </div>
             <div class="fps-controls" style="display: none;">
                 <label for="playbackFPS">Playback FPS:</label>
                 <select id="playbackFPS" class="fps-select">
@@ -41,6 +37,12 @@
         </div>
         <div class="preview-container">
             <canvas id="slicePreview" width="1" height="1080"></canvas>
+        </div>
+        <div class="controls">
+            <div class="control-row">
+                <button id="downloadButton" class="control-button" disabled>Download Image</button>
+                <button id="clearButton" class="control-button" disabled>Clear Image</button>
+            </div>
         </div>
     </div>
     <script src="app.js"></script>
