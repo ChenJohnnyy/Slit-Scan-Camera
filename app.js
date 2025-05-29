@@ -162,17 +162,11 @@ function captureSlice(canvas, ctx) {
     const centerX = Math.floor(canvas.width / 2);
     const imageData = ctx.getImageData(centerX, 0, sliceWidth, canvas.height);
     
-    // Update the slice preview
-    const previewCtx = slicePreview.getContext('2d');
-    slicePreview.width = 1;
-    slicePreview.height = preview.videoHeight;
-    previewCtx.clearRect(0, 0, slicePreview.width, slicePreview.height);
-    previewCtx.putImageData(imageData, 0, 0);
-    
     // Add the slice to our collection
     capturedSlices.push(imageData);
     
-    // Update the full preview
+    // Update both previews
+    updateSlicePreview();
     updateFullPreview();
     
     // Debug logging
@@ -185,6 +179,8 @@ function captureSlice(canvas, ctx) {
 
 // Update the full preview with all captured slices
 function updateFullPreview() {
+    if (capturedSlices.length === 0) return;
+    
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     
@@ -226,6 +222,30 @@ function updateFullPreview() {
     slicePreview.height = height;
     previewCtx.clearRect(0, 0, width, height);
     previewCtx.drawImage(canvas, 0, 0, width, height);
+}
+
+// Update the slice preview
+function updateSlicePreview() {
+    if (capturedSlices.length === 0) return;
+    
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Set canvas dimensions
+    canvas.width = capturedSlices.length;
+    canvas.height = preview.videoHeight;
+    
+    // Draw all slices
+    for (let i = 0; i < capturedSlices.length; i++) {
+        ctx.putImageData(capturedSlices[i], i, 0);
+    }
+    
+    // Update the preview
+    const previewCtx = slicePreview.getContext('2d');
+    slicePreview.width = canvas.width;
+    slicePreview.height = canvas.height;
+    previewCtx.clearRect(0, 0, slicePreview.width, slicePreview.height);
+    previewCtx.drawImage(canvas, 0, 0, slicePreview.width, slicePreview.height);
 }
 
 // Download the final image
