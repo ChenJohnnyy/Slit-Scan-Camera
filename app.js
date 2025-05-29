@@ -6,7 +6,7 @@ let frameCount = 0;
 let lastCaptureTime = 0;
 let sliceWidth = 1; // Width of each slice in pixels (single vertical line)
 const CAPTURE_FPS = 100; // Fixed capture framerate
-let playbackFPS = 30; // Default playback framerate
+let playbackFPS = 100; // Default playback framerate
 
 const preview = document.getElementById('preview');
 const slicePreview = document.getElementById('slicePreview');
@@ -286,6 +286,12 @@ function updatePlaybackFPS() {
     }
 }
 
+// Initialize playback FPS
+function initializePlaybackFPS() {
+    playbackFPSSelect.value = '100';
+    playbackFPS = 100;
+}
+
 // Recompose preview with current playback FPS
 function recomposePreview() {
     if (capturedSlices.length === 0) return;
@@ -323,4 +329,5 @@ function recomposePreview() {
 playbackFPSSelect.addEventListener('change', updatePlaybackFPS);
 
 // Initialize
-getCameras(); 
+getCameras();
+initializePlaybackFPS(); 
