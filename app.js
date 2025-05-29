@@ -213,7 +213,8 @@ function updateFullPreview() {
     for (let i = 0; i < capturedSlices.length; i += frameStep) {
         const slice = capturedSlices[i];
         const x = Math.floor((i / frameStep) * (width / totalWidth));
-        ctx.putImageData(slice, x, 0, 1, height);
+        const sliceWidth = Math.max(1, Math.floor(width / totalWidth));
+        ctx.putImageData(slice, x, 0, sliceWidth, height);
     }
     
     // Update the preview
