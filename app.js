@@ -247,67 +247,54 @@ async function downloadImage() {
         ctx.putImageData(slice, x, 0);
     }
     
+    // Get the data URL
+    const dataUrl = canvas.toDataURL('image/png');
+    
     // Check if we're on a mobile device
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     
     if (isMobile) {
         try {
-            // Convert canvas to blob
-            const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-            
-            // Create object URL
-            const url = URL.createObjectURL(blob);
-            
-            // Create a temporary link element
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'slit-scan-' + new Date().toISOString() + '.png';
-            
-            // For iOS devices
-            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                // Create an image element
-                const img = document.createElement('img');
-                img.src = url;
+            // Try to use the Web Share API first
+            if (navigator.share) {
+                // Convert data URL to blob
+                const response = await fetch(dataUrl);
+                const blob = await response.blob();
+                const file = new File([blob], 'slit-scan-' + new Date().toISOString() + '.png', { type: 'image/png' });
                 
-                // Wait for image to load
-                await new Promise(resolve => {
-                    img.onload = resolve;
+                await navigator.share({
+                    files: [file],
+                    title: 'Slit Scan Image',
+                    text: 'Check out this slit scan image I created!'
                 });
-                
-                // Create a temporary canvas to ensure proper image data
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = img.width;
-                tempCanvas.height = img.height;
-                const tempCtx = tempCanvas.getContext('2d');
-                tempCtx.drawImage(img, 0, 0);
-                
-                // Convert to data URL and open in new tab
-                const dataUrl = tempCanvas.toDataURL('image/png');
-                window.open(dataUrl, '_blank');
             } else {
-                // For Android devices
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const dataUrl = e.target.result;
-                    const link = document.createElement('a');
-                    link.href = dataUrl;
-                    link.download = 'slit-scan-' + new Date().toISOString() + '.png';
+                // Fallback for devices without Web Share API
+                const link = document.createElement('a');
+                link.href = dataUrl;
+                link.download = 'slit-scan-' + new Date().toISOString() + '.png';
+                
+                // For iOS devices
+                if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    // Open in new tab
+                    window.open(dataUrl, '_blank');
+                } else {
+                    // For Android devices
                     link.click();
-                };
-                reader.readAsDataURL(blob);
+                }
             }
-            
-            // Clean up
-            setTimeout(() => URL.revokeObjectURL(url), 1000);
         } catch (error) {
             console.error('Error saving image:', error);
-            alert('Error saving image. Please try again.');
+            // Fallback to basic download
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = 'slit-scan-' + new Date().toISOString() + '.png';
+            link.click();
         }
     } else {
         // Desktop behavior - download directly
         const link = document.createElement('a');
         link.download = 'slit-scan-' + new Date().toISOString() + '.png';
-        link.href = canvas.toDataURL('image/png');
+        link.href = dataUrl;
         link.click();
     }
 }
