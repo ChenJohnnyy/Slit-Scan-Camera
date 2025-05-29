@@ -4,18 +4,17 @@ let isCapturing = false;
 let captureInterval = null;
 let frameCount = 0;
 let lastCaptureTime = 0;
-let sliceWidth = 2; // Width of each slice in pixels
+let sliceWidth = 1; // Width of each slice in pixels (single vertical line)
 const CAPTURE_FPS = 100; // Fixed capture framerate
 let playbackFPS = 30; // Default playback framerate
 
 const preview = document.getElementById('preview');
 const slicePreview = document.getElementById('slicePreview');
 const cameraSelect = document.getElementById('cameraSelect');
-const startButton = document.getElementById('startButton');
 const captureButton = document.getElementById('captureButton');
 const downloadButton = document.getElementById('downloadButton');
 const clearButton = document.getElementById('clearButton');
-const playbackFPSInput = document.getElementById('playbackFPS');
+const playbackFPSSelect = document.getElementById('playbackFPS');
 
 // Get available cameras
 async function getCameras() {
@@ -90,7 +89,6 @@ async function startCamera() {
         const aspectRatio = preview.videoWidth / preview.videoHeight;
         preview.style.aspectRatio = aspectRatio;
 
-        startButton.textContent = 'Stop Camera';
         captureButton.disabled = false;
         clearButton.disabled = false;
     } catch (error) {
@@ -106,7 +104,6 @@ function stopCamera() {
         stream = null;
     }
     preview.srcObject = null;
-    startButton.textContent = 'Start Camera';
     captureButton.disabled = true;
     downloadButton.disabled = true;
     clearButton.disabled = true;
@@ -163,10 +160,10 @@ function captureSlice(canvas, ctx) {
     // Draw the current frame
     tempCtx.drawImage(preview, 0, 0, tempCanvas.width, tempCanvas.height);
     
-    // Get the center slice of the frame
+    // Get the center vertical line of pixels
     const centerX = Math.floor(tempCanvas.width / 2);
     const sliceData = tempCtx.getImageData(
-        centerX - Math.floor(sliceWidth / 2),
+        centerX,
         0,
         sliceWidth,
         tempCanvas.height
@@ -219,19 +216,19 @@ function downloadImage() {
     const ctx = canvas.getContext('2d');
     
     // Calculate total width based on playback FPS
-    // Higher FPS = more frames shown = wider image
-    const totalWidth = Math.ceil(capturedSlices.length * sliceWidth * (playbackFPS / CAPTURE_FPS));
+    const framesToShow = Math.ceil(capturedSlices.length * (playbackFPS / CAPTURE_FPS));
+    const totalWidth = framesToShow * sliceWidth;
     canvas.width = totalWidth;
     canvas.height = capturedSlices[0].naturalHeight;
     
     // Draw slices with adjusted spacing
     let x = 0;
-    const sliceSpacing = sliceWidth * (playbackFPS / CAPTURE_FPS);
+    const frameStep = Math.floor(CAPTURE_FPS / playbackFPS);
     
-    capturedSlices.forEach(img => {
-        ctx.drawImage(img, x, 0);
-        x += sliceSpacing;
-    });
+    for (let i = 0; i < capturedSlices.length; i += frameStep) {
+        ctx.drawImage(capturedSlices[i], x, 0);
+        x += sliceWidth;
+    }
     
     // Create download link
     const link = document.createElement('a');
@@ -248,14 +245,6 @@ function clearSlices() {
 }
 
 // Event listeners
-startButton.addEventListener('click', () => {
-    if (stream) {
-        stopCamera();
-    } else {
-        startCamera();
-    }
-});
-
 captureButton.addEventListener('click', () => {
     if (isCapturing) {
         stopCapturing();
@@ -269,8 +258,8 @@ clearButton.addEventListener('click', clearSlices);
 
 // Update playback FPS
 function updatePlaybackFPS() {
-    const newFPS = parseInt(playbackFPSInput.value);
-    if (newFPS >= 1 && newFPS <= 60) {
+    const newFPS = parseInt(playbackFPSSelect.value);
+    if (newFPS >= 1 && newFPS <= 100) {
         playbackFPS = newFPS;
         recomposePreview();
     }
@@ -284,19 +273,20 @@ function recomposePreview() {
     const ctx = canvas.getContext('2d');
     
     // Calculate total width based on playback FPS
-    // Higher FPS = more frames shown = wider image
-    const totalWidth = Math.ceil(capturedSlices.length * sliceWidth * (playbackFPS / CAPTURE_FPS));
+    // Scale down the number of frames based on the selected FPS
+    const framesToShow = Math.ceil(capturedSlices.length * (playbackFPS / CAPTURE_FPS));
+    const totalWidth = framesToShow * sliceWidth;
     canvas.width = totalWidth;
     canvas.height = capturedSlices[0].naturalHeight;
     
     // Draw slices with adjusted spacing
     let x = 0;
-    const sliceSpacing = sliceWidth * (playbackFPS / CAPTURE_FPS);
+    const frameStep = Math.floor(CAPTURE_FPS / playbackFPS);
     
-    capturedSlices.forEach(img => {
-        ctx.drawImage(img, x, 0);
-        x += sliceSpacing;
-    });
+    for (let i = 0; i < capturedSlices.length; i += frameStep) {
+        ctx.drawImage(capturedSlices[i], x, 0);
+        x += sliceWidth;
+    }
     
     // Update preview
     const previewImg = document.createElement('img');
@@ -309,7 +299,7 @@ function recomposePreview() {
 }
 
 // Add event listeners for FPS controls
-playbackFPSInput.addEventListener('change', updatePlaybackFPS);
+playbackFPSSelect.addEventListener('change', updatePlaybackFPS);
 
 // Initialize
 getCameras(); 

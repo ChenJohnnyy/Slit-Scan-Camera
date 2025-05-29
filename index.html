@@ -12,13 +12,19 @@
             <select id="cameraSelect" class="control-button">
                 <option value="">Loading cameras...</option>
             </select>
-            <button id="startButton" class="control-button">Start Camera</button>
             <button id="captureButton" class="control-button" disabled>Start Capturing</button>
             <button id="downloadButton" class="control-button" disabled>Download Image</button>
             <button id="clearButton" class="control-button" disabled>Clear Image</button>
             <div class="fps-controls">
                 <label for="playbackFPS">Playback FPS:</label>
-                <input type="number" id="playbackFPS" min="1" max="60" value="30" class="fps-input">
+                <select id="playbackFPS" class="fps-select">
+                    <option value="100">100 FPS</option>
+                    <option value="50">50 FPS</option>
+                    <option value="25">25 FPS</option>
+                    <option value="20">20 FPS</option>
+                    <option value="10">10 FPS</option>
+                    <option value="5">5 FPS</option>
+                </select>
             </div>
         </div>
         <div class="preview-container">

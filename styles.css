@@ -154,12 +154,17 @@ body {
     font-size: 14px;
 }
 
-.fps-input {
-    width: 60px;
-    padding: 4px;
+.fps-select {
+    padding: 4px 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    text-align: center;
+    font-size: 14px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.fps-select:hover {
+    border-color: #999;
 }
 
 @media (max-width: 1200px) {
