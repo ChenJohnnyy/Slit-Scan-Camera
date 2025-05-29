@@ -297,6 +297,9 @@ captureButton.addEventListener('click', () => {
 downloadButton.addEventListener('click', downloadImage);
 clearButton.addEventListener('click', clearSlices);
 
+// Add event listener for camera selection change
+cameraSelect.addEventListener('change', startCamera);
+
 // Update playback FPS
 function updatePlaybackFPS() {
     const newFPS = parseInt(playbackFPSSelect.value);
