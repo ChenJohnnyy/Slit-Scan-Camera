@@ -192,7 +192,7 @@ function updateFullPreview() {
     
     // Set canvas dimensions while maintaining aspect ratio
     const aspectRatio = preview.videoHeight / preview.videoWidth;
-    const maxHeight = 400; // Match CSS max-height
+    const maxHeight = 300; // Match CSS max-height
     const maxWidth = 800; // Match CSS max-width
     
     // Calculate dimensions that maintain aspect ratio and fit within max dimensions
@@ -237,32 +237,15 @@ function downloadImage() {
     const frameStep = Math.max(1, Math.floor(CAPTURE_FPS / playbackFPS));
     const totalWidth = Math.ceil(capturedSlices.length / frameStep);
     
-    // Set canvas dimensions while maintaining aspect ratio
-    const aspectRatio = preview.videoHeight / preview.videoWidth;
-    const maxHeight = 400; // Match CSS max-height
-    const maxWidth = 800; // Match CSS max-width
+    // Use original video dimensions for the downloaded image
+    canvas.width = totalWidth;
+    canvas.height = preview.videoHeight;
     
-    // Calculate dimensions that maintain aspect ratio and fit within max dimensions
-    let width = totalWidth;
-    let height = width * aspectRatio;
-    
-    if (height > maxHeight) {
-        height = maxHeight;
-        width = height / aspectRatio;
-    }
-    if (width > maxWidth) {
-        width = maxWidth;
-        height = width * aspectRatio;
-    }
-    
-    canvas.width = width;
-    canvas.height = height;
-    
-    // Draw each slice
+    // Draw each slice at full resolution
     for (let i = 0; i < capturedSlices.length; i += frameStep) {
         const slice = capturedSlices[i];
-        const x = Math.floor((i / frameStep) * (width / totalWidth));
-        ctx.putImageData(slice, x, 0, 1, height);
+        const x = Math.floor(i / frameStep);
+        ctx.putImageData(slice, x, 0);
     }
     
     // Create download link
