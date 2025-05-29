@@ -85,18 +85,14 @@ body {
 }
 
 .control-button {
-    padding: 10px 20px;
+    margin: 5px;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
     border: none;
     border-radius: 4px;
-    background-color: #007AFF;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.control-button:hover {
-    background-color: #0056b3;
 }
 
 .control-button:disabled {
@@ -144,6 +140,26 @@ body {
     height: 100%;
     width: auto;
     object-fit: contain;
+}
+
+.fps-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 5px;
+}
+
+.fps-controls label {
+    color: #333;
+    font-size: 14px;
+}
+
+.fps-input {
+    width: 60px;
+    padding: 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
 }
 
 @media (max-width: 1200px) {

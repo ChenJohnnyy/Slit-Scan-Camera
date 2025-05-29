@@ -5,6 +5,8 @@ let captureInterval = null;
 let frameCount = 0;
 let lastCaptureTime = 0;
 let sliceWidth = 2; // Width of each slice in pixels
+let captureFPS = 10; // Default capture framerate
+let playbackFPS = 10; // Default playback framerate
 
 const preview = document.getElementById('preview');
 const slicePreview = document.getElementById('slicePreview');
@@ -13,6 +15,8 @@ const startButton = document.getElementById('startButton');
 const captureButton = document.getElementById('captureButton');
 const downloadButton = document.getElementById('downloadButton');
 const clearButton = document.getElementById('clearButton');
+const captureFPSInput = document.getElementById('captureFPS');
+const playbackFPSInput = document.getElementById('playbackFPS');
 
 // Get available cameras
 async function getCameras() {
@@ -126,8 +130,11 @@ function startCapturing() {
     slicePreview.innerHTML = '';
     capturedSlices = [];
     
-    // Start capturing at 100ms intervals
-    captureInterval = setInterval(() => captureSlice(canvas, ctx), 100);
+    // Calculate interval based on FPS
+    const interval = 1000 / captureFPS;
+    
+    // Start capturing at specified FPS
+    captureInterval = setInterval(() => captureSlice(canvas, ctx), interval);
 }
 
 // Stop capturing slices
@@ -253,6 +260,31 @@ captureButton.addEventListener('click', () => {
 
 downloadButton.addEventListener('click', downloadImage);
 clearButton.addEventListener('click', clearSlices);
+
+// Update capture FPS
+function updateCaptureFPS() {
+    const newFPS = parseInt(captureFPSInput.value);
+    if (newFPS >= 1 && newFPS <= 60) {
+        captureFPS = newFPS;
+        if (isCapturing) {
+            // Restart capture with new FPS
+            stopCapturing();
+            startCapturing();
+        }
+    }
+}
+
+// Update playback FPS
+function updatePlaybackFPS() {
+    const newFPS = parseInt(playbackFPSInput.value);
+    if (newFPS >= 1 && newFPS <= 60) {
+        playbackFPS = newFPS;
+    }
+}
+
+// Add event listeners for FPS controls
+captureFPSInput.addEventListener('change', updateCaptureFPS);
+playbackFPSInput.addEventListener('change', updatePlaybackFPS);
 
 // Initialize
 getCameras(); 
