@@ -164,6 +164,8 @@ function captureSlice(canvas, ctx) {
     
     // Update the slice preview
     const previewCtx = slicePreview.getContext('2d');
+    slicePreview.width = 1;
+    slicePreview.height = preview.videoHeight;
     previewCtx.clearRect(0, 0, slicePreview.width, slicePreview.height);
     previewCtx.putImageData(imageData, 0, 0);
     
@@ -192,8 +194,8 @@ function updateFullPreview() {
     
     // Set canvas dimensions while maintaining aspect ratio
     const aspectRatio = preview.videoHeight / preview.videoWidth;
-    const maxHeight = 300; // Match CSS max-height
-    const maxWidth = 800; // Match CSS max-width
+    const maxHeight = 200; // Match CSS max-height
+    const maxWidth = 600; // Match CSS max-width
     
     // Calculate dimensions that maintain aspect ratio and fit within max dimensions
     let width = totalWidth;

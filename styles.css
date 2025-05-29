@@ -111,16 +111,27 @@ body {
 .preview-container {
     position: relative;
     width: 100%;
+    max-width: 600px;
+    margin: 0 auto 20px;
     background: #000;
     border-radius: 8px;
     overflow: hidden;
-    margin-bottom: 20px;
 }
 
 .preview-container canvas {
     width: 100%;
     height: auto;
+    max-height: 200px;
     display: block;
+    object-fit: contain;
+}
+
+#preview {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    display: block;
+    object-fit: contain;
 }
 
 .preview-overlay {
