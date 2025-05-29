@@ -185,9 +185,8 @@ function captureSlice(canvas, ctx) {
     // Add the slice to our collection
     capturedSlices.push(imageData);
     
-    // Update both previews
+    // Update preview
     updateSlicePreview();
-    updateFullPreview();
     
     // Debug logging
     frameCount++;
@@ -197,8 +196,8 @@ function captureSlice(canvas, ctx) {
     console.log(`Frame ${frameCount}: Time since last capture: ${timeSinceLastCapture.toFixed(2)}ms`);
 }
 
-// Update the full preview with all captured slices
-function updateFullPreview() {
+// Update the slice preview
+function updateSlicePreview() {
     if (capturedSlices.length === 0) return;
     
     const canvas = document.createElement('canvas');
@@ -243,30 +242,6 @@ function updateFullPreview() {
     slicePreview.height = height;
     previewCtx.clearRect(0, 0, width, height);
     previewCtx.drawImage(canvas, 0, 0, width, height);
-}
-
-// Update the slice preview
-function updateSlicePreview() {
-    if (capturedSlices.length === 0) return;
-    
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    
-    // Set canvas dimensions
-    canvas.width = capturedSlices.length;
-    canvas.height = preview.videoHeight;
-    
-    // Draw all slices
-    for (let i = 0; i < capturedSlices.length; i++) {
-        ctx.putImageData(capturedSlices[i], i, 0);
-    }
-    
-    // Update the preview
-    const previewCtx = slicePreview.getContext('2d');
-    slicePreview.width = canvas.width;
-    slicePreview.height = canvas.height;
-    previewCtx.clearRect(0, 0, slicePreview.width, slicePreview.height);
-    previewCtx.drawImage(canvas, 0, 0, slicePreview.width, slicePreview.height);
 }
 
 // Download the final image
@@ -327,7 +302,6 @@ function updatePlaybackFPS() {
         playbackFPS = newFPS;
         // Update both previews when FPS changes
         updateSlicePreview();
-        updateFullPreview();
     }
 }
 
