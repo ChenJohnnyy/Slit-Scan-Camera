@@ -5,8 +5,8 @@ let captureInterval = null;
 let frameCount = 0;
 let lastCaptureTime = 0;
 let sliceWidth = 2; // Width of each slice in pixels
-let captureFPS = 10; // Default capture framerate
-let playbackFPS = 10; // Default playback framerate
+const CAPTURE_FPS = 100; // Fixed capture framerate
+let playbackFPS = 30; // Default playback framerate
 
 const preview = document.getElementById('preview');
 const slicePreview = document.getElementById('slicePreview');
@@ -15,7 +15,6 @@ const startButton = document.getElementById('startButton');
 const captureButton = document.getElementById('captureButton');
 const downloadButton = document.getElementById('downloadButton');
 const clearButton = document.getElementById('clearButton');
-const captureFPSInput = document.getElementById('captureFPS');
 const playbackFPSInput = document.getElementById('playbackFPS');
 
 // Get available cameras
@@ -130,8 +129,8 @@ function startCapturing() {
     slicePreview.innerHTML = '';
     capturedSlices = [];
     
-    // Calculate interval based on FPS
-    const interval = 1000 / captureFPS;
+    // Calculate interval based on fixed capture FPS
+    const interval = 1000 / CAPTURE_FPS;
     
     // Start capturing at specified FPS
     captureInterval = setInterval(() => captureSlice(canvas, ctx), interval);
@@ -216,15 +215,18 @@ function downloadImage() {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     
-    // Set canvas size to match the total width of all slices
-    canvas.width = capturedSlices.reduce((total, img) => total + img.naturalWidth, 0);
+    // Calculate total width based on playback FPS
+    const totalWidth = Math.ceil(capturedSlices.length * sliceWidth * (CAPTURE_FPS / playbackFPS));
+    canvas.width = totalWidth;
     canvas.height = capturedSlices[0].naturalHeight;
     
-    // Draw all slices
+    // Draw slices with adjusted spacing
     let x = 0;
+    const sliceSpacing = sliceWidth * (CAPTURE_FPS / playbackFPS);
+    
     capturedSlices.forEach(img => {
         ctx.drawImage(img, x, 0);
-        x += img.naturalWidth;
+        x += sliceSpacing;
     });
     
     // Create download link
@@ -261,29 +263,47 @@ captureButton.addEventListener('click', () => {
 downloadButton.addEventListener('click', downloadImage);
 clearButton.addEventListener('click', clearSlices);
 
-// Update capture FPS
-function updateCaptureFPS() {
-    const newFPS = parseInt(captureFPSInput.value);
-    if (newFPS >= 1 && newFPS <= 60) {
-        captureFPS = newFPS;
-        if (isCapturing) {
-            // Restart capture with new FPS
-            stopCapturing();
-            startCapturing();
-        }
-    }
-}
-
 // Update playback FPS
 function updatePlaybackFPS() {
     const newFPS = parseInt(playbackFPSInput.value);
     if (newFPS >= 1 && newFPS <= 60) {
         playbackFPS = newFPS;
+        recomposePreview();
     }
 }
 
+// Recompose preview with current playback FPS
+function recomposePreview() {
+    if (capturedSlices.length === 0) return;
+    
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Calculate total width based on playback FPS
+    const totalWidth = Math.ceil(capturedSlices.length * sliceWidth * (CAPTURE_FPS / playbackFPS));
+    canvas.width = totalWidth;
+    canvas.height = capturedSlices[0].naturalHeight;
+    
+    // Draw slices with adjusted spacing
+    let x = 0;
+    const sliceSpacing = sliceWidth * (CAPTURE_FPS / playbackFPS);
+    
+    capturedSlices.forEach(img => {
+        ctx.drawImage(img, x, 0);
+        x += sliceSpacing;
+    });
+    
+    // Update preview
+    const previewImg = document.createElement('img');
+    previewImg.src = canvas.toDataURL('image/png');
+    previewImg.style.height = '100%';
+    
+    // Clear and update preview
+    slicePreview.innerHTML = '';
+    slicePreview.appendChild(previewImg);
+}
+
 // Add event listeners for FPS controls
-captureFPSInput.addEventListener('change', updateCaptureFPS);
 playbackFPSInput.addEventListener('change', updatePlaybackFPS);
 
 // Initialize
