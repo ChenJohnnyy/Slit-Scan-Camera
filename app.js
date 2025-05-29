@@ -226,7 +226,7 @@ function updateSlicePreview() {
 }
 
 // Download the final image
-function downloadImage() {
+async function downloadImage() {
     if (capturedSlices.length === 0) return;
     
     const canvas = document.createElement('canvas');
@@ -247,11 +247,44 @@ function downloadImage() {
         ctx.putImageData(slice, x, 0);
     }
     
-    // Create download link
-    const link = document.createElement('a');
-    link.download = 'slit-scan-' + new Date().toISOString() + '.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+    // Check if we're on a mobile device
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+        try {
+            // Convert canvas to blob
+            const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+            
+            // Create object URL
+            const url = URL.createObjectURL(blob);
+            
+            // Create a temporary link element
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'slit-scan-' + new Date().toISOString() + '.png';
+            
+            // For iOS devices
+            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                // Open in new tab to trigger download
+                window.open(url, '_blank');
+            } else {
+                // For Android devices
+                link.click();
+            }
+            
+            // Clean up
+            setTimeout(() => URL.revokeObjectURL(url), 100);
+        } catch (error) {
+            console.error('Error saving image:', error);
+            alert('Error saving image. Please try again.');
+        }
+    } else {
+        // Desktop behavior - download directly
+        const link = document.createElement('a');
+        link.download = 'slit-scan-' + new Date().toISOString() + '.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    }
 }
 
 // Clear all captured slices
