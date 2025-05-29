@@ -29,7 +29,15 @@
         </div>
         <div class="preview-container">
             <video id="preview" autoplay playsinline></video>
-            <div id="slicePreview" class="slice-preview"></div>
+            <div class="preview-overlay">
+                <div class="center-line"></div>
+            </div>
+        </div>
+        <div class="preview-container">
+            <canvas id="slicePreview" width="1" height="1080"></canvas>
+        </div>
+        <div class="preview-container">
+            <canvas id="fullPreview" width="1920" height="1080"></canvas>
         </div>
     </div>
     <script src="app.js"></script>

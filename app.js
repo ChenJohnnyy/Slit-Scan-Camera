@@ -147,58 +147,31 @@ function stopCapturing() {
     downloadButton.disabled = false;
 }
 
-// Capture a slice
+// Capture a single vertical slice from the center of the video
 function captureSlice(canvas, ctx) {
     if (!stream || !isCapturing) return;
 
-    // Create a temporary canvas for the current frame
-    const tempCanvas = document.createElement('canvas');
-    const tempCtx = tempCanvas.getContext('2d');
-    tempCanvas.width = preview.videoWidth;
-    tempCanvas.height = preview.videoHeight;
+    // Set canvas dimensions to match video
+    canvas.width = preview.videoWidth;
+    canvas.height = preview.videoHeight;
     
-    // Draw the current frame
-    tempCtx.drawImage(preview, 0, 0, tempCanvas.width, tempCanvas.height);
+    // Draw the current video frame
+    ctx.drawImage(preview, 0, 0, canvas.width, canvas.height);
     
     // Get the center vertical line of pixels
-    const centerX = Math.floor(tempCanvas.width / 2);
-    const sliceData = tempCtx.getImageData(
-        centerX,
-        0,
-        sliceWidth,
-        tempCanvas.height
-    );
+    const centerX = Math.floor(canvas.width / 2);
+    const imageData = ctx.getImageData(centerX, 0, sliceWidth, canvas.height);
     
-    // Resize the main canvas to accommodate the new slice
-    const newWidth = canvas.width + sliceWidth;
-    const tempCanvas2 = document.createElement('canvas');
-    const tempCtx2 = tempCanvas2.getContext('2d');
-    tempCanvas2.width = newWidth;
-    tempCanvas2.height = canvas.height;
+    // Update the slice preview
+    const previewCtx = slicePreview.getContext('2d');
+    previewCtx.clearRect(0, 0, slicePreview.width, slicePreview.height);
+    previewCtx.putImageData(imageData, 0, 0);
     
-    // Copy existing content
-    if (canvas.width > 0) {
-        tempCtx2.drawImage(canvas, 0, 0);
-    }
+    // Add the slice to our collection
+    capturedSlices.push(imageData);
     
-    // Add new slice
-    tempCtx2.putImageData(sliceData, canvas.width, 0);
-    
-    // Update main canvas
-    canvas.width = newWidth;
-    ctx.drawImage(tempCanvas2, 0, 0);
-    
-    // Create preview image
-    const img = document.createElement('img');
-    img.src = canvas.toDataURL('image/png');
-    img.style.height = '100%';
-    
-    // Add to preview
-    slicePreview.appendChild(img);
-    capturedSlices.push(img);
-    
-    // Scroll to the end
-    slicePreview.scrollLeft = slicePreview.scrollWidth;
+    // Update the full preview
+    updateFullPreview();
     
     // Debug logging
     frameCount++;
@@ -206,6 +179,30 @@ function captureSlice(canvas, ctx) {
     const timeSinceLastCapture = now - lastCaptureTime;
     lastCaptureTime = now;
     console.log(`Frame ${frameCount}: Time since last capture: ${timeSinceLastCapture.toFixed(2)}ms`);
+}
+
+// Update the full preview with all captured slices
+function updateFullPreview() {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Calculate total width based on number of slices and frame step
+    const frameStep = Math.max(1, Math.floor(CAPTURE_FPS / playbackFPS));
+    const totalWidth = Math.ceil(capturedSlices.length / frameStep);
+    
+    canvas.width = totalWidth;
+    canvas.height = preview.videoHeight;
+    
+    // Draw each slice
+    for (let i = 0; i < capturedSlices.length; i += frameStep) {
+        const slice = capturedSlices[i];
+        ctx.putImageData(slice, Math.floor(i / frameStep), 0);
+    }
+    
+    // Update the preview
+    const previewCtx = slicePreview.getContext('2d');
+    previewCtx.clearRect(0, 0, slicePreview.width, slicePreview.height);
+    previewCtx.drawImage(canvas, 0, 0, slicePreview.width, slicePreview.height);
 }
 
 // Download the final image

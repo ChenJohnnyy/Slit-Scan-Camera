@@ -114,15 +114,32 @@ body {
     background: #000;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
 }
 
-#preview {
+.preview-container canvas {
     width: 100%;
     height: auto;
     display: block;
-    object-fit: contain;
-    transform: scaleX(-1);
+}
+
+.preview-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+.center-line {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 100%;
+    background-color: rgba(255, 0, 0, 0.5);
+    transform: translateX(-50%);
 }
 
 .slice-preview {
