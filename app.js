@@ -205,45 +205,21 @@ function updateSlicePreview() {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     
-    // Calculate total width based on number of slices and frame step
-    const frameStep = Math.max(1, Math.floor(CAPTURE_FPS / playbackFPS));
-    const totalWidth = Math.ceil(capturedSlices.length / frameStep);
+    // Set canvas dimensions
+    canvas.width = capturedSlices.length;
+    canvas.height = preview.videoHeight;
     
-    // Set canvas dimensions while maintaining aspect ratio
-    const aspectRatio = preview.videoHeight / preview.videoWidth;
-    const maxHeight = 200; // Match CSS max-height
-    const maxWidth = 600; // Match CSS max-width
-    
-    // Calculate dimensions that maintain aspect ratio and fit within max dimensions
-    let width = totalWidth;
-    let height = width * aspectRatio;
-    
-    if (height > maxHeight) {
-        height = maxHeight;
-        width = height / aspectRatio;
-    }
-    if (width > maxWidth) {
-        width = maxWidth;
-        height = width * aspectRatio;
-    }
-    
-    canvas.width = width;
-    canvas.height = height;
-    
-    // Draw each slice
-    for (let i = 0; i < capturedSlices.length; i += frameStep) {
-        const slice = capturedSlices[i];
-        const x = Math.floor((i / frameStep) * (width / totalWidth));
-        const sliceWidth = Math.max(1, Math.floor(width / totalWidth));
-        ctx.putImageData(slice, x, 0, sliceWidth, height);
+    // Draw all slices
+    for (let i = 0; i < capturedSlices.length; i++) {
+        ctx.putImageData(capturedSlices[i], i, 0);
     }
     
     // Update the preview
     const previewCtx = slicePreview.getContext('2d');
-    slicePreview.width = width;
-    slicePreview.height = height;
-    previewCtx.clearRect(0, 0, width, height);
-    previewCtx.drawImage(canvas, 0, 0, width, height);
+    slicePreview.width = canvas.width;
+    slicePreview.height = canvas.height;
+    previewCtx.clearRect(0, 0, slicePreview.width, slicePreview.height);
+    previewCtx.drawImage(canvas, 0, 0, slicePreview.width, slicePreview.height);
 }
 
 // Download the final image
@@ -302,7 +278,7 @@ function updatePlaybackFPS() {
     const newFPS = parseInt(playbackFPSSelect.value);
     if (newFPS >= 1 && newFPS <= 100) {
         playbackFPS = newFPS;
-        // Update both previews when FPS changes
+        // Update preview when FPS changes
         updateSlicePreview();
     }
 }
