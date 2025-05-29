@@ -51,6 +51,9 @@ async function getCameras() {
         if (videoDevices.length === 0) {
             cameraSelect.innerHTML = '<option value="">No cameras found</option>';
         }
+
+        // Automatically start the camera after getting the list
+        await startCamera();
     } catch (error) {
         console.error('Error getting cameras:', error);
         cameraSelect.innerHTML = '<option value="">No cameras found</option>';
@@ -216,13 +219,14 @@ function downloadImage() {
     const ctx = canvas.getContext('2d');
     
     // Calculate total width based on playback FPS
-    const totalWidth = Math.ceil(capturedSlices.length * sliceWidth * (CAPTURE_FPS / playbackFPS));
+    // Higher FPS = more frames shown = wider image
+    const totalWidth = Math.ceil(capturedSlices.length * sliceWidth * (playbackFPS / CAPTURE_FPS));
     canvas.width = totalWidth;
     canvas.height = capturedSlices[0].naturalHeight;
     
     // Draw slices with adjusted spacing
     let x = 0;
-    const sliceSpacing = sliceWidth * (CAPTURE_FPS / playbackFPS);
+    const sliceSpacing = sliceWidth * (playbackFPS / CAPTURE_FPS);
     
     capturedSlices.forEach(img => {
         ctx.drawImage(img, x, 0);
@@ -280,13 +284,14 @@ function recomposePreview() {
     const ctx = canvas.getContext('2d');
     
     // Calculate total width based on playback FPS
-    const totalWidth = Math.ceil(capturedSlices.length * sliceWidth * (CAPTURE_FPS / playbackFPS));
+    // Higher FPS = more frames shown = wider image
+    const totalWidth = Math.ceil(capturedSlices.length * sliceWidth * (playbackFPS / CAPTURE_FPS));
     canvas.width = totalWidth;
     canvas.height = capturedSlices[0].naturalHeight;
     
     // Draw slices with adjusted spacing
     let x = 0;
-    const sliceSpacing = sliceWidth * (CAPTURE_FPS / playbackFPS);
+    const sliceSpacing = sliceWidth * (playbackFPS / CAPTURE_FPS);
     
     capturedSlices.forEach(img => {
         ctx.drawImage(img, x, 0);
