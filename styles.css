@@ -75,17 +75,22 @@ body {
 
 .controls {
     display: flex;
+    flex-direction: column;
     gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
     padding: 10px;
     background: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+.control-row {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
 .control-button {
-    margin: 5px;
+    margin: 0;
     padding: 8px 16px;
     font-size: 14px;
     cursor: pointer;
@@ -93,6 +98,7 @@ body {
     color: white;
     border: none;
     border-radius: 4px;
+    flex: 1;
 }
 
 .control-button:disabled {
@@ -109,7 +115,7 @@ body {
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 16px;
-    min-width: 200px;
+    width: 100%;
 }
 
 .preview-container {
@@ -120,7 +126,7 @@ body {
     background: #000;
     border-radius: 8px;
     overflow: hidden;
-    max-height: 400px;
+    max-height: 300px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -129,7 +135,7 @@ body {
 #preview {
     width: auto;
     height: 100%;
-    max-height: 400px;
+    max-height: 300px;
     max-width: 100%;
     display: block;
     object-fit: contain;
@@ -138,7 +144,7 @@ body {
 .preview-container canvas {
     width: auto;
     height: 100%;
-    max-height: 400px;
+    max-height: 300px;
     display: block;
     object-fit: contain;
     overflow-x: auto;
@@ -148,7 +154,7 @@ body {
 #slicePreview {
     width: auto;
     height: 100%;
-    max-height: 400px;
+    max-height: 300px;
     display: block;
     object-fit: contain;
     overflow-x: auto;
@@ -244,11 +250,15 @@ body {
     }
     
     .controls {
-        flex-direction: column;
+        padding: 10px;
+    }
+    
+    .control-row {
+        flex-direction: row;
     }
     
     .control-button {
-        width: 100%;
+        width: auto;
     }
     
     #cameraSelect {

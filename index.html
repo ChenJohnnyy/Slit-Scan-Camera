@@ -15,12 +15,18 @@
             </div>
         </div>
         <div class="controls">
-            <select id="cameraSelect" class="control-button">
-                <option value="">Loading cameras...</option>
-            </select>
-            <button id="captureButton" class="control-button" disabled>Start Capturing</button>
-            <button id="downloadButton" class="control-button" disabled>Download Image</button>
-            <button id="clearButton" class="control-button" disabled>Clear Image</button>
+            <div class="control-row">
+                <select id="cameraSelect" class="control-button">
+                    <option value="">Loading cameras...</option>
+                </select>
+            </div>
+            <div class="control-row">
+                <button id="captureButton" class="control-button" disabled>Start Capturing</button>
+            </div>
+            <div class="control-row">
+                <button id="downloadButton" class="control-button" disabled>Download Image</button>
+                <button id="clearButton" class="control-button" disabled>Clear Image</button>
+            </div>
             <div class="fps-controls" style="display: none;">
                 <label for="playbackFPS">Playback FPS:</label>
                 <select id="playbackFPS" class="fps-select">
