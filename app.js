@@ -29,25 +29,45 @@ async function getCameras() {
         // Clear existing options
         cameraSelect.innerHTML = '';
         
-        // Add each camera with a descriptive label
-        videoDevices.forEach((device, index) => {
-            const option = document.createElement('option');
-            option.value = device.deviceId;
+        // Check if we're on a mobile device
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        
+        if (isMobile) {
+            // For mobile, only show front and back camera options
+            const frontCamera = videoDevices.find(device => 
+                device.label.toLowerCase().includes('facing front') || 
+                device.label.toLowerCase().includes('front')
+            );
+            const backCamera = videoDevices.find(device => 
+                device.label.toLowerCase().includes('facing back') || 
+                device.label.toLowerCase().includes('back')
+            );
             
-            // Create a more descriptive label
-            let label = device.label || `Camera ${index + 1}`;
-            if (label.includes('facing back')) {
-                label = 'Back Camera';
-            } else if (label.includes('facing front')) {
-                label = 'Front Camera';
+            if (frontCamera) {
+                const option = document.createElement('option');
+                option.value = frontCamera.deviceId;
+                option.textContent = 'Front Camera';
+                cameraSelect.appendChild(option);
             }
             
-            option.textContent = label;
-            cameraSelect.appendChild(option);
-        });
+            if (backCamera) {
+                const option = document.createElement('option');
+                option.value = backCamera.deviceId;
+                option.textContent = 'Back Camera';
+                cameraSelect.appendChild(option);
+            }
+        } else {
+            // For desktop, show all cameras with descriptive labels
+            videoDevices.forEach((device, index) => {
+                const option = document.createElement('option');
+                option.value = device.deviceId;
+                option.textContent = device.label || `Camera ${index + 1}`;
+                cameraSelect.appendChild(option);
+            });
+        }
         
         // If no cameras found, show a message
-        if (videoDevices.length === 0) {
+        if (cameraSelect.options.length === 0) {
             cameraSelect.innerHTML = '<option value="">No cameras found</option>';
         }
 
@@ -267,8 +287,9 @@ function downloadImage() {
     // Draw each slice at full resolution
     for (let i = 0; i < capturedSlices.length; i += frameStep) {
         const slice = capturedSlices[i];
-        const x = Math.floor(i / frameStep);
-        ctx.putImageData(slice, x, 0);
+        const x = Math.floor((i / frameStep) * (canvas.width / totalWidth));
+        const sliceWidth = Math.max(1, Math.floor(canvas.width / totalWidth));
+        ctx.putImageData(slice, x, 0, sliceWidth, canvas.height);
     }
     
     // Create download link
