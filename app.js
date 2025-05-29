@@ -281,7 +281,7 @@ function updatePlaybackFPS() {
     const newFPS = parseInt(playbackFPSSelect.value);
     if (newFPS >= 1 && newFPS <= 100) {
         playbackFPS = newFPS;
-        recomposePreview();
+        updateFullPreview(); // Update the preview immediately when FPS changes
     }
 }
 
