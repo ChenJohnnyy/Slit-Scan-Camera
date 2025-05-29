@@ -100,6 +100,10 @@ body {
     cursor: not-allowed;
 }
 
+#captureButton.recording {
+    background-color: #f44336;
+}
+
 #cameraSelect {
     padding: 10px;
     border: 1px solid #ddd;

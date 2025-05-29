@@ -8,6 +8,12 @@
 </head>
 <body>
     <div class="container">
+        <div class="preview-container">
+            <video id="preview" autoplay playsinline></video>
+            <div class="preview-overlay">
+                <div class="center-line"></div>
+            </div>
+        </div>
         <div class="controls">
             <select id="cameraSelect" class="control-button">
                 <option value="">Loading cameras...</option>
@@ -15,7 +21,7 @@
             <button id="captureButton" class="control-button" disabled>Start Capturing</button>
             <button id="downloadButton" class="control-button" disabled>Download Image</button>
             <button id="clearButton" class="control-button" disabled>Clear Image</button>
-            <div class="fps-controls">
+            <div class="fps-controls" style="display: none;">
                 <label for="playbackFPS">Playback FPS:</label>
                 <select id="playbackFPS" class="fps-select">
                     <option value="100">100 FPS</option>
@@ -25,12 +31,6 @@
                     <option value="10">10 FPS</option>
                     <option value="5">5 FPS</option>
                 </select>
-            </div>
-        </div>
-        <div class="preview-container">
-            <video id="preview" autoplay playsinline></video>
-            <div class="preview-overlay">
-                <div class="center-line"></div>
             </div>
         </div>
         <div class="preview-container">

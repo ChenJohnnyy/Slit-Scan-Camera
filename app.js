@@ -136,6 +136,7 @@ function startCapturing() {
     
     isCapturing = true;
     captureButton.textContent = 'Stop Capturing';
+    captureButton.classList.add('recording');
     downloadButton.disabled = true;
     frameCount = 0;
     
@@ -164,6 +165,7 @@ function stopCapturing() {
         captureInterval = null;
     }
     captureButton.textContent = 'Start Capturing';
+    captureButton.classList.remove('recording');
     downloadButton.disabled = false;
 }
 
