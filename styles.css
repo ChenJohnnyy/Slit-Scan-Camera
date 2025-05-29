@@ -123,19 +123,23 @@ body {
 }
 
 .preview-container canvas {
-    width: 100%;
-    height: auto;
+    width: auto;
+    height: 100%;
     max-height: 200px;
     display: block;
     object-fit: contain;
+    overflow-x: auto;
+    white-space: nowrap;
 }
 
-#preview {
-    width: 100%;
-    height: auto;
+#slicePreview {
+    width: auto;
+    height: 100%;
     max-height: 200px;
     display: block;
     object-fit: contain;
+    overflow-x: auto;
+    white-space: nowrap;
 }
 
 .preview-overlay {

@@ -209,7 +209,7 @@ function updateSlicePreview() {
     canvas.width = capturedSlices.length;
     canvas.height = preview.videoHeight;
     
-    // Draw all slices
+    // Draw all slices from left to right
     for (let i = 0; i < capturedSlices.length; i++) {
         ctx.putImageData(capturedSlices[i], i, 0);
     }
@@ -220,6 +220,9 @@ function updateSlicePreview() {
     slicePreview.height = canvas.height;
     previewCtx.clearRect(0, 0, slicePreview.width, slicePreview.height);
     previewCtx.drawImage(canvas, 0, 0, slicePreview.width, slicePreview.height);
+    
+    // Scroll to the right edge of the preview
+    slicePreview.scrollLeft = slicePreview.scrollWidth;
 }
 
 // Download the final image
