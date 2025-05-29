@@ -287,9 +287,8 @@ function downloadImage() {
     // Draw each slice at full resolution
     for (let i = 0; i < capturedSlices.length; i += frameStep) {
         const slice = capturedSlices[i];
-        const x = Math.floor((i / frameStep) * (canvas.width / totalWidth));
-        const sliceWidth = Math.max(1, Math.floor(canvas.width / totalWidth));
-        ctx.putImageData(slice, x, 0, sliceWidth, canvas.height);
+        const x = Math.floor(i / frameStep);
+        ctx.putImageData(slice, x, 0);
     }
     
     // Create download link
