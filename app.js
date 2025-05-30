@@ -4,7 +4,7 @@ let isCapturing = false;
 let captureInterval = null;
 let frameCount = 0;
 let lastCaptureTime = 0;
-let sliceWidth = 1; // Width of each slice in pixels (single vertical line)
+let sliceWidth = 3; // Width of each slice in pixels (three vertical lines)
 const CAPTURE_FPS = 60; // Fixed capture framerate
 let playbackFPS = 60; // Default playback framerate
 
