@@ -222,14 +222,22 @@ function updateSlicePreview() {
     const halfSlices = Math.floor(capturedSlices.length / 2);
     
     for (let i = 0; i < capturedSlices.length; i++) {
-        // Create a slice canvas
+        // Create a slice canvas with exact height
         const sliceCanvas = document.createElement('canvas');
         sliceCanvas.width = SLICE_WIDTH;
         sliceCanvas.height = targetHeight;
         const sliceCtx = sliceCanvas.getContext('2d');
         
+        // Get the slice data and ensure it matches the target height
+        const sliceData = capturedSlices[i];
+        const sliceImageData = new ImageData(
+            new Uint8ClampedArray(sliceData.data),
+            SLICE_WIDTH,
+            targetHeight
+        );
+        
         // Put the slice data into the slice canvas
-        sliceCtx.putImageData(capturedSlices[i], 0, 0);
+        sliceCtx.putImageData(sliceImageData, 0, 0);
         
         // Calculate position from center
         const x = centerX - (halfSlices * SLICE_WIDTH) + (i * SLICE_WIDTH);
