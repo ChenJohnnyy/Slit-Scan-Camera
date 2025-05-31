@@ -225,8 +225,8 @@ function updateSlicePreview() {
     tempCanvas.height = targetHeight;
     const tempCtx = tempCanvas.getContext('2d');
     
-    // Draw all slices from left to right
-    for (let i = 0; i < capturedSlices.length; i++) {
+    // Draw all slices from left to right by using the array in reverse order
+    for (let i = capturedSlices.length - 1; i >= 0; i--) {
         // Create a slice canvas
         const sliceCanvas = document.createElement('canvas');
         sliceCanvas.width = sliceWidth;
@@ -237,7 +237,9 @@ function updateSlicePreview() {
         sliceCtx.putImageData(capturedSlices[i], 0, 0);
         
         // Draw the slice onto the temporary canvas at the correct position
-        tempCtx.drawImage(sliceCanvas, i * sliceWidth, 0, sliceWidth, targetHeight);
+        // Calculate position from left to right
+        const x = (capturedSlices.length - 1 - i) * sliceWidth;
+        tempCtx.drawImage(sliceCanvas, x, 0, sliceWidth, targetHeight);
     }
     
     // Update the preview
