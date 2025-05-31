@@ -219,19 +219,25 @@ function updateSlicePreview() {
     // Calculate the width of each slice in the preview
     const sliceWidth = targetWidth / capturedSlices.length;
     
+    // Create a temporary canvas for the entire preview
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = targetWidth;
+    tempCanvas.height = targetHeight;
+    const tempCtx = tempCanvas.getContext('2d');
+    
     // Draw all slices from left to right
     for (let i = 0; i < capturedSlices.length; i++) {
-        // Create a temporary canvas for each slice
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = sliceWidth;
-        tempCanvas.height = targetHeight;
-        const tempCtx = tempCanvas.getContext('2d');
+        // Create a slice canvas
+        const sliceCanvas = document.createElement('canvas');
+        sliceCanvas.width = sliceWidth;
+        sliceCanvas.height = targetHeight;
+        const sliceCtx = sliceCanvas.getContext('2d');
         
-        // Put the slice data into the temporary canvas
-        tempCtx.putImageData(capturedSlices[i], 0, 0);
+        // Put the slice data into the slice canvas
+        sliceCtx.putImageData(capturedSlices[i], 0, 0);
         
-        // Draw the temporary canvas onto the main canvas
-        ctx.drawImage(tempCanvas, i * sliceWidth, 0, sliceWidth, targetHeight);
+        // Draw the slice onto the temporary canvas at the correct position
+        tempCtx.drawImage(sliceCanvas, i * sliceWidth, 0, sliceWidth, targetHeight);
     }
     
     // Update the preview
@@ -239,7 +245,7 @@ function updateSlicePreview() {
     slicePreview.width = targetWidth;
     slicePreview.height = targetHeight;
     previewCtx.clearRect(0, 0, slicePreview.width, slicePreview.height);
-    previewCtx.drawImage(canvas, 0, 0, slicePreview.width, slicePreview.height);
+    previewCtx.drawImage(tempCanvas, 0, 0, slicePreview.width, slicePreview.height);
     
     // Scroll to the right edge of the preview
     slicePreview.scrollLeft = slicePreview.scrollWidth;
