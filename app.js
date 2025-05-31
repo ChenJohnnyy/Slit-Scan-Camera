@@ -4,7 +4,7 @@ let isCapturing = false;
 let captureInterval = null;
 let frameCount = 0;
 let lastCaptureTime = 0;
-let sliceWidth = 20; // Width of each slice in pixels (twenty vertical lines)
+const SLICE_WIDTH = 20; // Width of each slice in pixels (twenty vertical lines)
 const CAPTURE_FPS = 60; // Fixed capture framerate
 let playbackFPS = 60; // Default playback framerate
 let currentCaptureFPS = CAPTURE_FPS; // Current capture framerate
@@ -185,7 +185,7 @@ function captureSlice(canvas, ctx) {
     
     // Get the center vertical line of pixels
     const centerX = Math.floor(canvas.width / 2);
-    const imageData = ctx.getImageData(centerX, 0, sliceWidth, canvas.height);
+    const imageData = ctx.getImageData(centerX, 0, SLICE_WIDTH, canvas.height);
     
     // Add the slice to our collection
     capturedSlices.push(imageData);
@@ -226,7 +226,7 @@ function updateSlicePreview() {
     for (let i = 0; i < capturedSlices.length; i++) {
         // Create a slice canvas
         const sliceCanvas = document.createElement('canvas');
-        sliceCanvas.width = sliceWidth;
+        sliceCanvas.width = SLICE_WIDTH;
         sliceCanvas.height = targetHeight;
         const sliceCtx = sliceCanvas.getContext('2d');
         
@@ -234,7 +234,7 @@ function updateSlicePreview() {
         sliceCtx.putImageData(capturedSlices[i], 0, 0);
         
         // Draw the slice onto the temporary canvas at the current position
-        tempCtx.drawImage(sliceCanvas, i * sliceWidth, 0, sliceWidth, targetHeight);
+        tempCtx.drawImage(sliceCanvas, i * SLICE_WIDTH, 0, SLICE_WIDTH, targetHeight);
     }
     
     // Update the preview
@@ -255,19 +255,17 @@ async function downloadImage() {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     
-    // Calculate total width based on number of slices and frame step
-    const frameStep = Math.max(1, Math.floor(CAPTURE_FPS / playbackFPS));
-    const totalWidth = Math.ceil(capturedSlices.length / frameStep);
+    // Calculate total width based on number of slices and slice width
+    const totalWidth = capturedSlices.length * SLICE_WIDTH;
     
     // Use original video dimensions for the downloaded image
     canvas.width = totalWidth;
     canvas.height = preview.videoHeight;
     
     // Draw each slice at full resolution
-    for (let i = 0; i < capturedSlices.length; i += frameStep) {
+    for (let i = 0; i < capturedSlices.length; i++) {
         const slice = capturedSlices[i];
-        const x = Math.floor(i / frameStep);
-        ctx.putImageData(slice, x, 0);
+        ctx.putImageData(slice, i * SLICE_WIDTH, 0);
     }
     
     // Get the data URL
@@ -370,7 +368,7 @@ function recomposePreview() {
     // Calculate total width based on playback FPS
     // Scale down the number of frames based on the selected FPS
     const framesToShow = Math.ceil(capturedSlices.length * (playbackFPS / CAPTURE_FPS));
-    const totalWidth = framesToShow * sliceWidth;
+    const totalWidth = framesToShow * SLICE_WIDTH;
     canvas.width = totalWidth;
     canvas.height = capturedSlices[0].naturalHeight;
     
@@ -380,7 +378,7 @@ function recomposePreview() {
     
     for (let i = 0; i < capturedSlices.length; i += frameStep) {
         ctx.drawImage(capturedSlices[i], x, 0);
-        x += sliceWidth;
+        x += SLICE_WIDTH;
     }
     
     // Update preview
