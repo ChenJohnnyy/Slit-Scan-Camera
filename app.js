@@ -220,8 +220,9 @@ function updateSlicePreview() {
     const previewCtx = slicePreview.getContext('2d');
     previewCtx.clearRect(0, 0, slicePreview.width, slicePreview.height);
     
-    // Determine which slices to show (most recent ones)
-    const startIndex = Math.max(0, capturedSlices.length - maxSlices);
+    // Start with a minimum number of slices to ensure visibility
+    const minSlices = Math.min(10, maxSlices);
+    const startIndex = Math.max(0, capturedSlices.length - minSlices);
     const slicesToShow = capturedSlices.slice(startIndex);
     
     // Draw slices from left to right
@@ -240,9 +241,13 @@ function updateSlicePreview() {
         previewCtx.drawImage(sliceCanvas, x, 0, SLICE_WIDTH, targetHeight);
     }
     
-    // Scroll to the right edge
+    // Only scroll to the right if we have more slices than the minimum
     const container = document.getElementById('slicePreviewContainer');
-    container.scrollLeft = container.scrollWidth;
+    if (capturedSlices.length > minSlices) {
+        container.scrollLeft = container.scrollWidth;
+    } else {
+        container.scrollLeft = 0;
+    }
 }
 
 // Download the final image
