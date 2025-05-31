@@ -11,11 +11,9 @@
         <div class="header">
             <h1>Slit-Scan Camera</h1>
         </div>
-        <div class="preview-container">
+        <div id="previewContainer">
             <video id="preview" autoplay playsinline></video>
-            <div class="preview-overlay">
-                <div class="center-line"></div>
-            </div>
+            <div class="center-line"></div>
         </div>
         <div class="controls">
             <div class="control-row">
@@ -38,8 +36,8 @@
                 </select>
             </div>
         </div>
-        <div class="preview-container">
-            <canvas id="slicePreview" width="1" height="1080"></canvas>
+        <div id="slicePreviewContainer">
+            <canvas id="slicePreview"></canvas>
         </div>
         <div class="controls">
             <div class="control-row">
