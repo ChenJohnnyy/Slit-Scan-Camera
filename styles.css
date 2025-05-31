@@ -156,22 +156,19 @@ body {
 
 #slicePreview {
     width: 100%;
-    height: auto;
-    max-height: 400px;
+    height: 400px;
     margin-top: 20px;
     border-radius: 8px;
     background-color: #000;
     overflow-x: auto;
     overflow-y: hidden;
     white-space: nowrap;
-    display: flex;
-    align-items: center;
+    position: relative;
 }
 
 #slicePreview canvas {
     height: 100%;
-    display: inline-block;
-    vertical-align: middle;
+    display: block;
 }
 
 .preview-overlay {
@@ -189,7 +186,7 @@ body {
 .center-line {
     position: absolute;
     top: 0;
-    bottom: 0;
+    height: 100%;
     width: 2px;
     background-color: rgba(255, 0, 0, 0.5);
     left: 50%;
