@@ -216,10 +216,14 @@ function updateSlicePreview() {
     canvas.width = targetWidth;
     canvas.height = targetHeight;
     
-    // Draw all slices from left to right, scaling to fit the 16:9 ratio
+    // Calculate the width of each slice in the preview
     const sliceWidth = targetWidth / capturedSlices.length;
+    
+    // Draw all slices from left to right
     for (let i = 0; i < capturedSlices.length; i++) {
-        ctx.putImageData(capturedSlices[i], i * sliceWidth, 0, sliceWidth, targetHeight);
+        // Calculate the x position for this slice
+        const x = i * sliceWidth;
+        ctx.putImageData(capturedSlices[i], x, 0, sliceWidth, targetHeight);
     }
     
     // Update the preview
