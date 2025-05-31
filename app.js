@@ -205,25 +205,20 @@ function captureSlice(canvas, ctx) {
 function updateSlicePreview() {
     if (capturedSlices.length === 0) return;
     
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    
     // Calculate dimensions to maintain 16:9 ratio
     const targetHeight = preview.videoHeight;
     const targetWidth = Math.round(targetHeight * (16/9));
     
-    // Set canvas dimensions
-    canvas.width = targetWidth;
-    canvas.height = targetHeight;
+    // Set preview canvas dimensions to match the total width of all slices
+    slicePreview.width = capturedSlices.length * SLICE_WIDTH;
+    slicePreview.height = targetHeight;
     
-    // Create a temporary canvas for the entire preview
-    const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = targetWidth;
-    tempCanvas.height = targetHeight;
-    const tempCtx = tempCanvas.getContext('2d');
+    // Clear the preview canvas
+    const previewCtx = slicePreview.getContext('2d');
+    previewCtx.clearRect(0, 0, slicePreview.width, slicePreview.height);
     
     // Draw all slices from center outward
-    const centerX = Math.floor(targetWidth / 2);
+    const centerX = Math.floor(slicePreview.width / 2);
     const halfSlices = Math.floor(capturedSlices.length / 2);
     
     for (let i = 0; i < capturedSlices.length; i++) {
@@ -238,16 +233,8 @@ function updateSlicePreview() {
         
         // Calculate position from center
         const x = centerX - (halfSlices * SLICE_WIDTH) + (i * SLICE_WIDTH);
-        tempCtx.drawImage(sliceCanvas, x, 0, SLICE_WIDTH, targetHeight);
+        previewCtx.drawImage(sliceCanvas, x, 0, SLICE_WIDTH, targetHeight);
     }
-    
-    // Update the preview
-    const previewCtx = slicePreview.getContext('2d');
-    // Set width to accommodate all slices without stretching
-    slicePreview.width = capturedSlices.length * SLICE_WIDTH;
-    slicePreview.height = targetHeight;
-    previewCtx.clearRect(0, 0, slicePreview.width, slicePreview.height);
-    previewCtx.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height);
     
     // Scroll to the center of the preview
     const container = document.getElementById('slicePreviewContainer');

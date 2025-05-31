@@ -165,14 +165,13 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     min-height: 400px;
     position: relative;
-    white-space: nowrap;
 }
 
 #slicePreview {
     height: 400px;
-    display: inline-block;
-    min-width: 100%;
+    display: block;
     width: auto;
+    min-width: 100%;
 }
 
 .preview-overlay {
