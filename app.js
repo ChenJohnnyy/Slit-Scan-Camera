@@ -243,14 +243,15 @@ function updateSlicePreview() {
     
     // Update the preview
     const previewCtx = slicePreview.getContext('2d');
-    // Set width to accommodate all slices
-    slicePreview.width = Math.max(targetWidth, capturedSlices.length * SLICE_WIDTH);
+    // Set width to accommodate all slices without stretching
+    slicePreview.width = capturedSlices.length * SLICE_WIDTH;
     slicePreview.height = targetHeight;
     previewCtx.clearRect(0, 0, slicePreview.width, slicePreview.height);
-    previewCtx.drawImage(tempCanvas, 0, 0, slicePreview.width, slicePreview.height);
+    previewCtx.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height);
     
     // Scroll to the center of the preview
-    slicePreview.scrollLeft = (slicePreview.scrollWidth - slicePreview.clientWidth) / 2;
+    const container = document.getElementById('slicePreviewContainer');
+    container.scrollLeft = (slicePreview.width - container.clientWidth) / 2;
 }
 
 // Download the final image
