@@ -141,7 +141,7 @@ body {
     margin: 0 auto;
     overflow: hidden;
     border-radius: 8px;
-    background-color: var(--surface-color);
+    background-color: #000;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -151,6 +151,7 @@ body {
     max-height: 400px;
     display: block;
     border-radius: 8px;
+    object-fit: contain;
 }
 
 #slicePreview {
@@ -159,7 +160,7 @@ body {
     max-height: 400px;
     margin-top: 20px;
     border-radius: 8px;
-    background-color: var(--surface-color);
+    background-color: #000;
     overflow-x: auto;
     overflow-y: hidden;
     white-space: nowrap;
@@ -190,11 +191,11 @@ body {
     top: 0;
     bottom: 0;
     width: 2px;
-    height: 100%;
     background-color: rgba(255, 0, 0, 0.5);
     left: 50%;
     transform: translateX(-50%);
     z-index: 1;
+    pointer-events: none;
 }
 
 .slice-preview {
