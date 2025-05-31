@@ -212,21 +212,16 @@ function updateSlicePreview() {
     // Calculate how many slices can fit in the target width
     const maxSlices = Math.floor(targetWidth / SLICE_WIDTH);
     
-    // Set preview canvas dimensions to match the target width
-    slicePreview.width = targetWidth;
+    // Set preview canvas dimensions to match the total width of all slices
+    slicePreview.width = capturedSlices.length * SLICE_WIDTH;
     slicePreview.height = targetHeight;
     
     // Clear the preview canvas
     const previewCtx = slicePreview.getContext('2d');
     previewCtx.clearRect(0, 0, slicePreview.width, slicePreview.height);
     
-    // Start with a minimum number of slices to ensure visibility
-    const minSlices = Math.min(10, maxSlices);
-    const startIndex = Math.max(0, capturedSlices.length - minSlices);
-    const slicesToShow = capturedSlices.slice(startIndex);
-    
-    // Draw slices from left to right
-    for (let i = 0; i < slicesToShow.length; i++) {
+    // Draw all slices from left to right
+    for (let i = 0; i < capturedSlices.length; i++) {
         // Create a slice canvas
         const sliceCanvas = document.createElement('canvas');
         sliceCanvas.width = SLICE_WIDTH;
@@ -234,20 +229,18 @@ function updateSlicePreview() {
         const sliceCtx = sliceCanvas.getContext('2d');
         
         // Put the slice data into the slice canvas
-        sliceCtx.putImageData(slicesToShow[i], 0, 0);
+        sliceCtx.putImageData(capturedSlices[i], 0, 0);
         
         // Calculate position from left
         const x = i * SLICE_WIDTH;
         previewCtx.drawImage(sliceCanvas, x, 0, SLICE_WIDTH, targetHeight);
     }
     
-    // Only scroll to the right if we have more slices than the minimum
+    // Scroll to show the most recent slices
     const container = document.getElementById('slicePreviewContainer');
-    if (capturedSlices.length > minSlices) {
-        container.scrollLeft = container.scrollWidth;
-    } else {
-        container.scrollLeft = 0;
-    }
+    const visibleWidth = container.clientWidth;
+    const scrollPosition = Math.max(0, slicePreview.width - visibleWidth);
+    container.scrollLeft = scrollPosition;
 }
 
 // Download the final image
