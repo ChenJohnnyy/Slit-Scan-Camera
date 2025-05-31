@@ -7,6 +7,9 @@ let lastCaptureTime = 0;
 let sliceWidth = 20; // Width of each slice in pixels (twenty vertical lines)
 const CAPTURE_FPS = 60; // Fixed capture framerate
 let playbackFPS = 60; // Default playback framerate
+let currentCaptureFPS = CAPTURE_FPS; // Current capture framerate
+const MIN_CAPTURE_FPS = 10; // Minimum capture framerate
+const DECELERATION_RATE = 0.95; // Rate at which FPS decreases (0.95 = 5% decrease per second)
 
 const preview = document.getElementById('preview');
 const slicePreview = document.getElementById('slicePreview');
@@ -205,19 +208,24 @@ function updateSlicePreview() {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     
-    // Set canvas dimensions
-    canvas.width = capturedSlices.length;
-    canvas.height = preview.videoHeight;
+    // Calculate dimensions to maintain 16:9 ratio
+    const targetHeight = preview.videoHeight;
+    const targetWidth = Math.round(targetHeight * (16/9));
     
-    // Draw all slices from left to right
+    // Set canvas dimensions
+    canvas.width = targetWidth;
+    canvas.height = targetHeight;
+    
+    // Draw all slices from left to right, scaling to fit the 16:9 ratio
+    const sliceWidth = targetWidth / capturedSlices.length;
     for (let i = 0; i < capturedSlices.length; i++) {
-        ctx.putImageData(capturedSlices[i], i, 0);
+        ctx.putImageData(capturedSlices[i], i * sliceWidth, 0, sliceWidth, targetHeight);
     }
     
     // Update the preview
     const previewCtx = slicePreview.getContext('2d');
-    slicePreview.width = canvas.width;
-    slicePreview.height = canvas.height;
+    slicePreview.width = targetWidth;
+    slicePreview.height = targetHeight;
     previewCtx.clearRect(0, 0, slicePreview.width, slicePreview.height);
     previewCtx.drawImage(canvas, 0, 0, slicePreview.width, slicePreview.height);
     
