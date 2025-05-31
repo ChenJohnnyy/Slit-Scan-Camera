@@ -209,19 +209,23 @@ function updateSlicePreview() {
     const targetHeight = preview.videoHeight;
     const targetWidth = Math.round(targetHeight * (16/9));
     
-    // Set preview canvas dimensions to match the total width of all slices
-    slicePreview.width = capturedSlices.length * SLICE_WIDTH;
+    // Calculate how many slices can fit in the target width
+    const maxSlices = Math.floor(targetWidth / SLICE_WIDTH);
+    
+    // Set preview canvas dimensions to match the target width
+    slicePreview.width = targetWidth;
     slicePreview.height = targetHeight;
     
     // Clear the preview canvas
     const previewCtx = slicePreview.getContext('2d');
     previewCtx.clearRect(0, 0, slicePreview.width, slicePreview.height);
     
-    // Draw all slices from center outward
-    const centerX = Math.floor(slicePreview.width / 2);
-    const halfSlices = Math.floor(capturedSlices.length / 2);
+    // Determine which slices to show (most recent ones)
+    const startIndex = Math.max(0, capturedSlices.length - maxSlices);
+    const slicesToShow = capturedSlices.slice(startIndex);
     
-    for (let i = 0; i < capturedSlices.length; i++) {
+    // Draw slices from left to right
+    for (let i = 0; i < slicesToShow.length; i++) {
         // Create a slice canvas
         const sliceCanvas = document.createElement('canvas');
         sliceCanvas.width = SLICE_WIDTH;
@@ -229,16 +233,16 @@ function updateSlicePreview() {
         const sliceCtx = sliceCanvas.getContext('2d');
         
         // Put the slice data into the slice canvas
-        sliceCtx.putImageData(capturedSlices[i], 0, 0);
+        sliceCtx.putImageData(slicesToShow[i], 0, 0);
         
-        // Calculate position from center
-        const x = centerX - (halfSlices * SLICE_WIDTH) + (i * SLICE_WIDTH);
+        // Calculate position from left
+        const x = i * SLICE_WIDTH;
         previewCtx.drawImage(sliceCanvas, x, 0, SLICE_WIDTH, targetHeight);
     }
     
-    // Scroll to the center of the preview
+    // Scroll to the right edge
     const container = document.getElementById('slicePreviewContainer');
-    container.scrollLeft = (slicePreview.width - container.clientWidth) / 2;
+    container.scrollLeft = container.scrollWidth;
 }
 
 // Download the final image
