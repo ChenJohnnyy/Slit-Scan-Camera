@@ -222,7 +222,10 @@ function updateSlicePreview() {
     tempCanvas.height = targetHeight;
     const tempCtx = tempCanvas.getContext('2d');
     
-    // Draw all slices from left to right
+    // Draw all slices from center outward
+    const centerX = Math.floor(targetWidth / 2);
+    const halfSlices = Math.floor(capturedSlices.length / 2);
+    
     for (let i = 0; i < capturedSlices.length; i++) {
         // Create a slice canvas
         const sliceCanvas = document.createElement('canvas');
@@ -233,19 +236,20 @@ function updateSlicePreview() {
         // Put the slice data into the slice canvas
         sliceCtx.putImageData(capturedSlices[i], 0, 0);
         
-        // Draw the slice onto the temporary canvas at the current position
-        tempCtx.drawImage(sliceCanvas, i * SLICE_WIDTH, 0, SLICE_WIDTH, targetHeight);
+        // Calculate position from center
+        const x = centerX - (halfSlices * SLICE_WIDTH) + (i * SLICE_WIDTH);
+        tempCtx.drawImage(sliceCanvas, x, 0, SLICE_WIDTH, targetHeight);
     }
     
     // Update the preview
     const previewCtx = slicePreview.getContext('2d');
-    slicePreview.width = capturedSlices.length * SLICE_WIDTH;
+    slicePreview.width = targetWidth;
     slicePreview.height = targetHeight;
     previewCtx.clearRect(0, 0, slicePreview.width, slicePreview.height);
     previewCtx.drawImage(tempCanvas, 0, 0, slicePreview.width, slicePreview.height);
     
-    // Scroll to the right edge of the preview
-    slicePreview.scrollLeft = slicePreview.scrollWidth;
+    // Scroll to the center of the preview
+    slicePreview.scrollLeft = (slicePreview.scrollWidth - slicePreview.clientWidth) / 2;
 }
 
 // Download the final image
