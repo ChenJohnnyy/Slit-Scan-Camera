@@ -239,7 +239,7 @@ function updateSlicePreview() {
     
     // Update the preview
     const previewCtx = slicePreview.getContext('2d');
-    slicePreview.width = targetWidth;
+    slicePreview.width = capturedSlices.length * SLICE_WIDTH;
     slicePreview.height = targetHeight;
     previewCtx.clearRect(0, 0, slicePreview.width, slicePreview.height);
     previewCtx.drawImage(tempCanvas, 0, 0, slicePreview.width, slicePreview.height);

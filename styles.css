@@ -163,11 +163,14 @@ body {
     background-color: #000;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-height: 400px;
+    position: relative;
 }
 
 #slicePreview {
     height: 400px;
     display: block;
+    min-width: 100%;
 }
 
 .preview-overlay {
