@@ -171,6 +171,7 @@ body {
     height: 400px;
     display: block;
     min-width: 100%;
+    width: auto;
 }
 
 .preview-overlay {
