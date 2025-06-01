@@ -205,38 +205,24 @@ function captureSlice(canvas, ctx) {
 function updateSlicePreview() {
     if (capturedSlices.length === 0) return;
     
-    // Calculate dimensions to maintain 16:9 ratio
-    const targetHeight = preview.videoHeight;
-    
     // Set preview canvas dimensions to match the total width of all slices
-    slicePreview.width = capturedSlices.length * SLICE_WIDTH;
-    slicePreview.height = targetHeight;
+    const totalWidth = capturedSlices.length * SLICE_WIDTH;
+    slicePreview.width = totalWidth;
+    slicePreview.height = preview.videoHeight;
     
     // Clear the preview canvas
     const previewCtx = slicePreview.getContext('2d');
-    previewCtx.clearRect(0, 0, slicePreview.width, slicePreview.height);
+    previewCtx.clearRect(0, 0, totalWidth, slicePreview.height);
     
-    // Draw all slices from left to right at their actual size
-    for (let i = 0; i < capturedSlices.length; i++) {
-        // Create a slice canvas
-        const sliceCanvas = document.createElement('canvas');
-        sliceCanvas.width = SLICE_WIDTH;
-        sliceCanvas.height = targetHeight;
-        const sliceCtx = sliceCanvas.getContext('2d');
-        
-        // Put the slice data into the slice canvas
-        sliceCtx.putImageData(capturedSlices[i], 0, 0);
-        
-        // Draw the slice at its actual position and size
-        const x = i * SLICE_WIDTH;
-        previewCtx.drawImage(sliceCanvas, x, 0, SLICE_WIDTH, targetHeight);
-    }
+    // Draw each slice at its exact position
+    capturedSlices.forEach((slice, index) => {
+        const x = index * SLICE_WIDTH;
+        previewCtx.putImageData(slice, x, 0);
+    });
     
     // Scroll to show the most recent slices
     const container = document.getElementById('slicePreviewContainer');
-    const visibleWidth = container.clientWidth;
-    const scrollPosition = Math.max(0, slicePreview.width - visibleWidth);
-    container.scrollLeft = scrollPosition;
+    container.scrollLeft = totalWidth - container.clientWidth;
 }
 
 // Download the final image
