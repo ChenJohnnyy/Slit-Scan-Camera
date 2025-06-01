@@ -207,10 +207,6 @@ function updateSlicePreview() {
     
     // Calculate dimensions to maintain 16:9 ratio
     const targetHeight = preview.videoHeight;
-    const targetWidth = Math.round(targetHeight * (16/9));
-    
-    // Calculate how many slices can fit in the target width
-    const maxSlices = Math.floor(targetWidth / SLICE_WIDTH);
     
     // Set preview canvas dimensions to match the total width of all slices
     slicePreview.width = capturedSlices.length * SLICE_WIDTH;
@@ -220,7 +216,7 @@ function updateSlicePreview() {
     const previewCtx = slicePreview.getContext('2d');
     previewCtx.clearRect(0, 0, slicePreview.width, slicePreview.height);
     
-    // Draw all slices from left to right
+    // Draw all slices from left to right at their actual size
     for (let i = 0; i < capturedSlices.length; i++) {
         // Create a slice canvas
         const sliceCanvas = document.createElement('canvas');
@@ -231,7 +227,7 @@ function updateSlicePreview() {
         // Put the slice data into the slice canvas
         sliceCtx.putImageData(capturedSlices[i], 0, 0);
         
-        // Calculate position from left
+        // Draw the slice at its actual position and size
         const x = i * SLICE_WIDTH;
         previewCtx.drawImage(sliceCanvas, x, 0, SLICE_WIDTH, targetHeight);
     }
