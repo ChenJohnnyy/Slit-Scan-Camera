@@ -260,10 +260,10 @@ async function downloadImage() {
     canvas.height = preview.videoHeight;
     
     // Draw each slice at full resolution
-    for (let i = 0; i < capturedSlices.length; i++) {
-        const slice = capturedSlices[i];
-        ctx.putImageData(slice, i * SLICE_WIDTH, 0);
-    }
+    capturedSlices.forEach((slice, index) => {
+        const x = index * SLICE_WIDTH;
+        ctx.putImageData(slice, x, 0);
+    });
     
     // Get the data URL
     const dataUrl = canvas.toDataURL('image/png');
