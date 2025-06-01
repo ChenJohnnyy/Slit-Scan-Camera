@@ -163,7 +163,7 @@ body {
     background-color: #000;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    min-height: 400px;
+    min-height: 300px;
     position: relative;
 }
 
@@ -281,7 +281,7 @@ body {
     }
 
     #slicePreviewContainer {
-        min-height: 300px;
+        min-height: 200px;
         height: auto;
     }
 

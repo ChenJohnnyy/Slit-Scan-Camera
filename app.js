@@ -205,9 +205,12 @@ function captureSlice(canvas, ctx) {
 function updateSlicePreview() {
     if (capturedSlices.length === 0) return;
     
-    // Set preview canvas dimensions to match the total width of all slices
+    // Calculate dimensions to maintain aspect ratio
+    const originalHeight = preview.videoHeight;
+    const maxHeight = 300; // Maximum height for the preview
+    const scale = Math.min(1, maxHeight / originalHeight);
+    const totalHeight = Math.round(originalHeight * scale);
     const totalWidth = capturedSlices.length * SLICE_WIDTH;
-    const totalHeight = preview.videoHeight;
     
     // Ensure canvas dimensions are set correctly
     if (slicePreview.width !== totalWidth || slicePreview.height !== totalHeight) {
@@ -223,10 +226,18 @@ function updateSlicePreview() {
     const previewCtx = slicePreview.getContext('2d');
     previewCtx.clearRect(0, 0, totalWidth, totalHeight);
     
-    // Draw each slice at its exact position
+    // Draw each slice at its exact position, scaled down
     capturedSlices.forEach((slice, index) => {
         const x = index * SLICE_WIDTH;
-        previewCtx.putImageData(slice, x, 0);
+        // Create a temporary canvas for scaling
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = SLICE_WIDTH;
+        tempCanvas.height = originalHeight;
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCtx.putImageData(slice, 0, 0);
+        
+        // Draw the scaled slice
+        previewCtx.drawImage(tempCanvas, x, 0, SLICE_WIDTH, totalHeight);
     });
     
     // Scroll to show the most recent slices
