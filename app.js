@@ -207,12 +207,17 @@ function updateSlicePreview() {
     
     // Set preview canvas dimensions to match the total width of all slices
     const totalWidth = capturedSlices.length * SLICE_WIDTH;
-    slicePreview.width = totalWidth;
-    slicePreview.height = preview.videoHeight;
+    const totalHeight = preview.videoHeight;
+    
+    // Ensure canvas dimensions are set correctly
+    if (slicePreview.width !== totalWidth || slicePreview.height !== totalHeight) {
+        slicePreview.width = totalWidth;
+        slicePreview.height = totalHeight;
+    }
     
     // Clear the preview canvas
     const previewCtx = slicePreview.getContext('2d');
-    previewCtx.clearRect(0, 0, totalWidth, slicePreview.height);
+    previewCtx.clearRect(0, 0, totalWidth, totalHeight);
     
     // Draw each slice at its exact position
     capturedSlices.forEach((slice, index) => {

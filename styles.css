@@ -172,6 +172,8 @@ body {
     display: block;
     width: auto;
     min-width: 100%;
+    max-width: none;
+    object-fit: none;
 }
 
 .preview-overlay {
