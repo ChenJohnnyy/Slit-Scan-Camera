@@ -213,6 +213,10 @@ function updateSlicePreview() {
     if (slicePreview.width !== totalWidth || slicePreview.height !== totalHeight) {
         slicePreview.width = totalWidth;
         slicePreview.height = totalHeight;
+        
+        // Update container height to match canvas
+        const container = document.getElementById('slicePreviewContainer');
+        container.style.height = totalHeight + 'px';
     }
     
     // Clear the preview canvas

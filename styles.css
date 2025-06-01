@@ -168,7 +168,7 @@ body {
 }
 
 #slicePreview {
-    height: 400px;
+    height: 100%;
     display: block;
     width: auto;
     min-width: 100%;
@@ -278,5 +278,15 @@ body {
     
     #cameraSelect {
         width: 100%;
+    }
+
+    #slicePreviewContainer {
+        min-height: 300px;
+        height: auto;
+    }
+
+    #slicePreview {
+        height: auto;
+        max-height: none;
     }
 } 
